@@ -152,15 +152,15 @@ $("exportBtn").addEventListener("click",()=>{
       return row;
     }),
     ["LOOSE COINS", ...records.map(r=>money(r.looseCoins))],
-    ["TOTAL CASH", ...records.map(r=>money(r.cash))],
-    ["OTHER CASH", ...records.map(r=>money(r.otherCash))],
-    ["ALL TOTAL CASH", ...records.map(r=>money(r.allTotalCash))],
+    ["TOTAL", ...records.map(r=>money(r.cash))],
+    ["SET DRAWER", ...records.map(r=>money(r.otherCash))],
+    ["TOTAL CASH", ...records.map(r=>money(r.allTotalCash))],
     ["PCV LOOSE", ...records.map(r=>money(r.pcvLoose))],
-    ["PCV HAND", ...records.map(r=>money(r.pcvHand))],
+    ["PCV ON HAND", ...records.map(r=>money(r.pcvHand))],
     ["PCV HEAD", ...records.map(r=>money(r.pcvHeadOffice))],
     ["TOTAL PCV", ...records.map(r=>money(r.pcvTotal))],
-    ["GRAND TOTAL", ...records.map(r=>money(r.grand))],
-    ["CASH IN DRAWER", ...records.map(r=>money(r.drawer))],
+    ["TOTAL SAFE FUND/CASH", ...records.map(r=>money(r.grand))],
+    ["SAFE FUND SET/CASH IN DRAWER", ...records.map(r=>money(r.drawer))],
     ["VARIANCE", ...records.map(r=>money(r.variance))]
   ];
   const quote=value=>`"${String(value ?? "").replace(/"/g,'""')}"`;
