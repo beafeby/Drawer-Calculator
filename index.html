@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#da291c">
+  <title>Cashier Cash Counter</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <style>
+    :root { color-scheme: light; --red:#da291c; --red-dark:#b51f16; --yellow:#ffc72c; --line:#eadfdc; --muted:#746b68; --bg:#fff9ed; }
+    * { box-sizing:border-box }
+    body { margin:0; font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif; background:var(--bg); color:#33201c; }
+    header { background:var(--red); color:white; padding:20px 16px; }
+    header .wrap, main { max-width:760px; margin:auto; }
+    h1 { margin:0; font-size:1.45rem } header p { margin:4px 0 0; opacity:.9; font-size:.9rem }
+    main { padding:16px; }
+    section,.total-card { background:white; border:1px solid var(--line); border-radius:14px; padding:16px; margin:0 0 14px; }
+    h2 { font-size:1.08rem; margin:0 0 12px; }
+    label { display:block; font-weight:650; font-size:.88rem; margin:0 0 5px; }
+    input,textarea,button { font:inherit; }
+    input,textarea { width:100%; min-width:0; border:1px solid #cbd5ce; border-radius:9px; padding:10px 11px; background:white; color:#33201c; }
+    input:focus,textarea:focus { outline:2px solid #ffd966; border-color:var(--red); }
+    .muted { color:var(--muted); font-size:.86rem; }
+    .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+    .denom-head,.denom-row { display:grid; grid-template-columns:68px minmax(0,1fr) 18px minmax(0,1fr); gap:7px; align-items:center; }
+    .denom-head { padding:0 8px 7px; color:var(--muted); font-size:.78rem; font-weight:700; text-align:center; }
+    .denom-row { padding:9px 8px; border-top:1px solid #f1e8df; }
+    .denom-value { font-weight:800; color:#5c211c; white-space:nowrap; }
+    .denom-row input { padding:9px 7px; text-align:right; }
+    .times { text-align:center; color:var(--muted); font-weight:700; }
+    .denom-total { font-weight:700; font-size:.8rem; color:var(--muted); text-align:right; margin-top:4px; }
+    .total-line { display:flex; justify-content:space-between; align-items:center; gap:12px; padding-top:12px; margin-top:10px; border-top:2px solid #f0e5d9; }
+    .money { font-weight:800; font-variant-numeric:tabular-nums; }
+    .pcv-box { border:1px solid #f0e5d9; border-radius:11px; padding:12px; margin-top:10px; }
+    .pcv-box h3 { margin:0 0 8px; font-size:.98rem; }
+    textarea { min-height:88px; resize:vertical; }
+    .total-card { background:#fff4cc; border:1px solid #f0c84b; }
+    .total-card h2 { margin-bottom:8px; }
+    .summary-row { display:flex; justify-content:space-between; gap:12px; padding:9px 0; border-bottom:1px solid #ead9a7; }
+    .summary-row:last-child { border-bottom:0; }
+    .grand { font-size:1.35rem; color:var(--red-dark); font-weight:900; }
+    .variance { font-size:1.2rem; font-weight:900; }
+    .positive { color:#16733c; } .negative { color:#b51f16; }
+    button { border:0; border-radius:10px; padding:12px 14px; font-weight:700; cursor:pointer; }
+    .primary { background:var(--red); color:white; width:100%; }
+    .secondary { background:#fff0bd; color:#6b281f; }
+    .danger { background:#fff0ef; color:#9b2420; }
+    .actions { display:grid; grid-template-columns:1fr 1fr; gap:9px; margin-top:10px; }
+    .record { border:1px solid var(--line); border-radius:10px; padding:12px; margin-top:10px; background:#fff; }
+    .record h3 { margin:0; font-size:1rem; }
+    .record small,.note { color:var(--muted); font-size:.82rem; }
+    .hidden { display:none !important; }
+    @media(max-width:420px) {
+      main{padding:10px} section,.total-card{padding:12px}
+      .denom-head,.denom-row { grid-template-columns:55px minmax(0,1fr) 14px minmax(0,1fr); gap:5px; }
+      .denom-row {padding:8px 3px} .denom-row input{font-size:.92rem;padding:9px 5px}
+    }
+  </style>
+</head>
+<body>
+<header><div class="wrap"><h1>Cashier Cash Counter</h1><p>Cash count · PCV breakdown · Drawer variance · Daily records</p></div></header>
+<main>
+  <section>
+    <h2>Cashier information</h2>
+    <div class="grid">
+      <div><label for="date">Date</label><input id="date" type="date"></div>
+      <div><label for="cashier">Cashier name</label><input id="cashier" type="text" placeholder="Enter cashier name"></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>1. Cash counting</h2>
+    <p class="muted">Enter either Quantity or Total. The other field will calculate automatically.</p>
+    <div class="denom-head"><span>VALUE</span><span>QUANTITY</span><span></span><span>TOTAL (₱)</span></div>
+    <div id="denominations"></div>
+    <div style="margin-top:14px;max-width:340px">
+      <label for="looseCoins">Loose coins total (₱)</label>
+      <input id="looseCoins" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0.00">
+    </div>
+    <div class="total-line"><strong>TOTAL CASH</strong><strong class="money" id="cashTotal">₱0.00</strong></div>
+  </section>
+
+  <section>
+    <h2>2. Other cash / adjustment</h2>
+    <label for="otherCash">Enter other cash or adjustment (₱)</label>
+    <input id="otherCash" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Enter amount">
+    <p class="note">This amount is added to Total Cash to calculate All Total Cash.</p>
+  </section>
+
+  <section>
+    <h2>3. PCV breakdown</h2>
+    <p class="muted">Enter one amount per line. Each section is added to the Total PCV.</p>
+    <div class="pcv-box">
+      <h3>PCV LOOSE</h3>
+      <textarea id="pcvLoose" placeholder="Enter one amount per line&#10;Example:&#10;50&#10;100&#10;250"></textarea>
+      <div class="total-line"><span class="muted">PCV Loose subtotal</span><strong class="money" id="pcvLooseSubtotal">₱0.00</strong></div>
+    </div>
+    <div class="pcv-box">
+      <h3>PCV HAND</h3>
+      <textarea id="pcvHand" placeholder="Enter one amount per line&#10;Example:&#10;500&#10;1000"></textarea>
+      <div class="total-line"><span class="muted">PCV Hand subtotal</span><strong class="money" id="pcvHandSubtotal">₱0.00</strong></div>
+    </div>
+    <div class="pcv-box">
+      <h3>PCV HEADOFFICE</h3>
+      <textarea id="pcvHeadOffice" placeholder="Enter one amount per line&#10;Example:&#10;1000&#10;2000"></textarea>
+      <div class="total-line"><span class="muted">PCV Headoffice subtotal</span><strong class="money" id="pcvHeadOfficeSubtotal">₱0.00</strong></div>
+    </div>
+    <div class="total-line"><strong>TOTAL PCV</strong><strong class="money" id="pcvTotal">₱0.00</strong></div>
+  </section>
+
+  <section>
+    <h2>4. Cash in Drawer</h2>
+    <label for="drawer">Enter counted cash in drawer (₱)</label>
+    <input id="drawer" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Enter amount counted in drawer">
+    <p class="note">This amount is compared with the Grand Total below.</p>
+  </section>
+
+  <div class="total-card">
+    <h2>Cash summary</h2>
+    <div class="summary-row"><span>Total Cash</span><strong class="money" id="summaryCash">₱0.00</strong></div>
+    <div class="summary-row"><span>Other cash / adjustment</span><strong class="money" id="summaryOtherCash">₱0.00</strong></div>
+    <div class="summary-row"><strong>ALL TOTAL CASH</strong><strong class="money" id="allTotalCash">₱0.00</strong></div>
+    <div class="summary-row"><span>Total PCV</span><strong class="money" id="summaryPcv">₱0.00</strong></div>
+    <div class="summary-row"><strong>GRAND TOTAL</strong><strong class="money grand" id="grandTotal">₱0.00</strong></div>
+    <div class="summary-row"><span>Cash in Drawer</span><strong class="money" id="summaryDrawer">₱0.00</strong></div>
+    <div class="summary-row"><strong>VARIANCE</strong><strong class="money variance" id="variance">₱0.00</strong></div>
+    <p class="note" id="varianceNote">Positive = short · Negative = over</p>
+  </div>
+
+  <section>
+    <h2>5. Save this count</h2>
+    <button class="primary" id="saveBtn">Save cashier record</button>
+    <p class="note">Records are saved on this phone/browser. Export CSV regularly as a backup.</p>
+    <div class="actions">
+      <button class="secondary" id="clearBtn" type="button">Clear form</button>
+      <button class="secondary" id="exportBtn" type="button">Export records (CSV)</button>
+    </div>
+  </section>
+
+  <section>
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+      <h2 style="margin:0">Saved records <span id="recordCount" class="muted">(0)</span></h2>
+      <button class="secondary" id="toggleRecords" type="button">Hide</button>
+    </div>
+    <div id="records"></div>
+  </section>
+  <p class="note">Tip: Install this app from your browser menu using “Add to Home screen” or “Install app” after publishing it on GitHub Pages.</p>
+</main>
+<script src="app.js"></script>
+</body>
+</html>
