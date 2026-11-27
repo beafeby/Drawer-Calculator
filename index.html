@@ -59,7 +59,7 @@
   </style>
 </head>
 <body>
-<header><div class="wrap"><h1>Cashier Cash Counter</h1><p>Cash count · PCV breakdown · Drawer variance · Daily records</p></div></header>
+<header><div class="wrap"><h1>Cash Counter</h1><p>Cash count · PCV breakdown · Drawer variance · Daily records</p></div></header>
 <main>
   <section>
     <h2>Cashier information</h2>
@@ -75,14 +75,14 @@
     <div class="denom-head"><span>VALUE</span><span>QUANTITY</span><span></span><span>TOTAL (₱)</span></div>
     <div id="denominations"></div>
     <div style="margin-top:14px;max-width:340px">
-      <label for="looseCoins">Loose coins total (₱)</label>
+      <label for="looseCoins">Loose coin (₱)</label>
       <input id="looseCoins" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0.00">
     </div>
-    <div class="total-line"><strong>TOTAL CASH</strong><strong class="money" id="cashTotal">₱0.00</strong></div>
+    <div class="total-line"><strong>TOTAL </strong><strong class="money" id="cashTotal">₱0.00</strong></div>
   </section>
 
   <section>
-    <h2>2. Other cash / adjustment</h2>
+    <h2>2. Set Drawer </h2>
     <label for="otherCash">Enter other cash or adjustment (₱)</label>
     <input id="otherCash" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Enter amount">
     <p class="note">This amount is added to Total Cash to calculate All Total Cash.</p>
@@ -90,42 +90,42 @@
 
   <section>
     <h2>3. PCV breakdown</h2>
-    <p class="muted">Enter one amount per line. Each section is added to the Total PCV.</p>
+    <p class="muted">Enter PCV's.</p>
     <div class="pcv-box">
       <h3>PCV LOOSE</h3>
-      <textarea id="pcvLoose" placeholder="Enter one amount per line&#10;Example:&#10;50&#10;100&#10;250"></textarea>
+      <textarea id="pcvLoose" placeholder="Enter one amount per line&#10;Example:&#10;50&#10;100&#10;250" inputmode="decimal" ></textarea>
       <div class="total-line"><span class="muted">PCV Loose subtotal</span><strong class="money" id="pcvLooseSubtotal">₱0.00</strong></div>
     </div>
     <div class="pcv-box">
-      <h3>PCV HAND</h3>
-      <textarea id="pcvHand" placeholder="Enter one amount per line&#10;Example:&#10;500&#10;1000"></textarea>
-      <div class="total-line"><span class="muted">PCV Hand subtotal</span><strong class="money" id="pcvHandSubtotal">₱0.00</strong></div>
+      <h3>PCV ON HAND</h3>
+      <textarea id="pcvHand" placeholder="Enter one amount per line&#10;Example:&#10;500&#10;1000" inputmode="decimal" ></textarea>
+      <div class="total-line"><span class="muted">PCV ON Hand subtotal</span><strong class="money" id="pcvHandSubtotal">₱0.00</strong></div>
     </div>
     <div class="pcv-box">
-      <h3>PCV HEADOFFICE</h3>
-      <textarea id="pcvHeadOffice" placeholder="Enter one amount per line&#10;Example:&#10;1000&#10;2000"></textarea>
-      <div class="total-line"><span class="muted">PCV Headoffice subtotal</span><strong class="money" id="pcvHeadOfficeSubtotal">₱0.00</strong></div>
+      <h3>PCV HEAD OFFICE</h3>
+      <textarea id="pcvHeadOffice" placeholder="Enter one amount per line&#10;Example:&#10;1000&#10;2000" inputmode="decimal" ></textarea>
+      <div class="total-line"><span class="muted">PCV Head office subtotal</span><strong class="money" id="pcvHeadOfficeSubtotal">₱0.00</strong></div>
     </div>
     <div class="total-line"><strong>TOTAL PCV</strong><strong class="money" id="pcvTotal">₱0.00</strong></div>
   </section>
 
   <section>
-    <h2>4. Cash in Drawer</h2>
-    <label for="drawer">Enter counted cash in drawer (₱)</label>
-    <input id="drawer" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Enter amount counted in drawer">
+    <h2>4. Safe Fund Set </h2>
+    <label for="drawer">Enter safe fund set or cash in drawer (₱)</label>
+    <input id="drawer" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Enter amount set or cash in drawer">
     <p class="note">This amount is compared with the Grand Total below.</p>
   </section>
 
   <div class="total-card">
     <h2>Cash summary</h2>
-    <div class="summary-row"><span>Total Cash</span><strong class="money" id="summaryCash">₱0.00</strong></div>
-    <div class="summary-row"><span>Other cash / adjustment</span><strong class="money" id="summaryOtherCash">₱0.00</strong></div>
-    <div class="summary-row"><strong>ALL TOTAL CASH</strong><strong class="money" id="allTotalCash">₱0.00</strong></div>
+    <div class="summary-row"><span>Total </span><strong class="money" id="summaryCash">₱0.00</strong></div>
+    <div class="summary-row"><span> Set Drawer </span><strong class="money" id="summaryOtherCash">₱0.00</strong></div>
+    <div class="summary-row"><strong>TOTAL CASH</strong><strong class="money" id="allTotalCash">₱0.00</strong></div>
     <div class="summary-row"><span>Total PCV</span><strong class="money" id="summaryPcv">₱0.00</strong></div>
-    <div class="summary-row"><strong>GRAND TOTAL</strong><strong class="money grand" id="grandTotal">₱0.00</strong></div>
-    <div class="summary-row"><span>Cash in Drawer</span><strong class="money" id="summaryDrawer">₱0.00</strong></div>
+    <div class="summary-row"><strong>TOTAL Safe Fund </strong><strong class="money grand" id="grandTotal">₱0.00</strong></div>
+    <div class="summary-row"><span> Safe Fund Set </span><strong class="money" id="summaryDrawer">₱0.00</strong></div>
     <div class="summary-row"><strong>VARIANCE</strong><strong class="money variance" id="variance">₱0.00</strong></div>
-    <p class="note" id="varianceNote">Positive = short · Negative = over</p>
+    <p class="note" id="varianceNote">Positive = over · Negative = short </p>
   </div>
 
   <section>
@@ -145,7 +145,7 @@
     </div>
     <div id="records"></div>
   </section>
-  <p class="note">Tip: Install this app from your browser menu using “Add to Home screen” or “Install app” after publishing it on GitHub Pages.</p>
+  <p class="note">Tip: Install this app from your browser menu using “Add to Home screen” or “Install app”.</p>
 </main>
 <script src="app.js"></script>
 </body>
