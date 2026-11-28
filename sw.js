@@ -1,4 +1,4 @@
-const CACHE = "cashier-cash-counter-v5";
+const CACHE = "cashier-cash-counter-v6";
 const FILES = ["./","./index.html","./app.js","./manifest.webmanifest","./icon.svg"];
 self.addEventListener("install",event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(FILES))));
 self.addEventListener("activate",event=>event.waitUntil(
