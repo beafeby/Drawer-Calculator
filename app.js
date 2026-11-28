@@ -1,6 +1,6 @@
 const $ = id => document.getElementById(id);
 const bills = [
-  ["₱1",1],["₱5",5],["₱20",20],["₱50",50],
+  ["₱1",1],["₱5",5],["₱10",10],["₱20",20],["₱50",50],
   ["₱100",100],["₱200",200],["₱500",500],["₱1,000",1000]
 ];
 const money = n => new Intl.NumberFormat("en-PH",{style:"currency",currency:"PHP"}).format(Number(n)||0);
